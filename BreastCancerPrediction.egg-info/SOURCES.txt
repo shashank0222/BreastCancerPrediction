@@ -1,0 +1,7 @@
+setup.py
+BreastCancerPrediction.egg-info/PKG-INFO
+BreastCancerPrediction.egg-info/SOURCES.txt
+BreastCancerPrediction.egg-info/dependency_links.txt
+BreastCancerPrediction.egg-info/requires.txt
+BreastCancerPrediction.egg-info/top_level.txt
+src/__init__.py
