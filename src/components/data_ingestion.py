@@ -8,6 +8,8 @@ from sklearn.model_selection import train_test_split
 
 from dataclasses import dataclass
 
+from pymongo.mongo_client import MongoClient
+
 # initialize the data ingestion configuration
 @dataclass
 class DataIngestionConfig:
@@ -26,12 +28,34 @@ class DataIngestion:
         logging.info("Data Ingestion method starts")
 
         try:
-            df = pd.read_csv(os.path.join('notebooks/data' , 'gemstone.csv'))
+            uri = "mongodb+srv://shashank:shashank@cluster0.ylucjb4.mongodb.net/?retryWrites=true&w=majority"
+
+            # Create a new client and connect to the server
+
+            client = MongoClient(uri)            
+
+            db = client['MLProjects']
+            coll = db['breastCancer']
+
+            cursor = coll.find({})
+
+            data = list(cursor)
+            df = pd.DataFrame(data)
+
+            # drop the id column
+
+            df = df.drop('_id' , axis=1)
+
+            # converting the datatype into int
+
+            df['target'] = df['target'].astype(int)
+
+
 
             logging.info('Dataset read as pd DataFrame')
 
             # making the  artifacts directory
-            os.makedirs(os.path.join(self.ingestion_config.raw_data_path) , exist_ok=True)
+            os.makedirs(os.path.dirname(self.ingestion_config.raw_data_path) , exist_ok=True)
 
             # saving the raw dataset into artifacts
             df.to_csv(self.ingestion_config.raw_data_path , index=False)
